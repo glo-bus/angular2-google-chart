@@ -21,9 +21,24 @@ System.register(['@angular/core'], function(exports_1, context_1) {
             GoogleChart = (function () {
                 function GoogleChart(element) {
                     this.element = element;
+                    this.redraw = false;
                     this._element = this.element.nativeElement;
                 }
+                Object.defineProperty(GoogleChart.prototype, "chartData", {
+                    get: function () { return this._chartData; },
+                    set: function (val) {
+                        this._chartData = val;
+                        if (this.redraw === true) {
+                            this.drawAfterGoogleLoaded();
+                        }
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 GoogleChart.prototype.ngOnInit = function () {
+                    this.drawAfterGoogleLoaded();
+                };
+                GoogleChart.prototype.drawAfterGoogleLoaded = function () {
                     var _this = this;
                     if (!googleLoaded) {
                         googleLoaded = true;
@@ -53,9 +68,14 @@ System.register(['@angular/core'], function(exports_1, context_1) {
                     __metadata('design:type', Object)
                 ], GoogleChart.prototype, "chartOptions", void 0);
                 __decorate([
-                    core_1.Input('chartData'), 
-                    __metadata('design:type', Object)
-                ], GoogleChart.prototype, "chartData", void 0);
+                    core_1.Input('redraw'), 
+                    __metadata('design:type', Boolean)
+                ], GoogleChart.prototype, "redraw", void 0);
+                __decorate([
+                    core_1.Input(), 
+                    __metadata('design:type', Object), 
+                    __metadata('design:paramtypes', [Object])
+                ], GoogleChart.prototype, "chartData", null);
                 GoogleChart = __decorate([
                     core_1.Directive({
                         selector: '[GoogleChart]',

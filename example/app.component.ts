@@ -12,7 +12,8 @@ import {Component} from '@angular/core';
     <h2>  Area Chart</h2>
     <div id="area_chart" [chartData]="area_ChartData" [chartOptions]= "area_ChartOptions" chartType="AreaChart" GoogleChart></div>
     <h2>  Line Chart</h2>
-    <div id="line_chart" [chartData]="line_ChartData" [chartOptions]= "line_ChartOptions" chartType="LineChart" GoogleChart></div>
+    <div id="line_chart" [chartData]="line_ChartData" [chartOptions]= "line_ChartOptions" chartType="LineChart" [redraw]="true" GoogleChart></div>
+    <br/><button (click)="redrawChart()">Use line_ChartData2 and Redraw Chart</button>
     <h2>  Bubble Chart</h2>
     <div id="bubble_chart" [chartData]="bubble_ChartData"  [chartOptions] = "bubble_ChartOptions" chartType="BubbleChart" GoogleChart></div>
     <h2>  Scatter Chart</h2>
@@ -23,7 +24,6 @@ import {Component} from '@angular/core';
     <div id="pie_chart" [chartData]="pie_ChartData" [chartOptions] = "pie_ChartOptions" chartType="PieChart" GoogleChart></div>
     <h2>  Bar Chart</h2>
     <div id="bar_chart" [chartData]="bar_ChartData" [chartOptions] = "bar_ChartOptions" chartType="BarChart" GoogleChart></div>
-
 	`
 })
 export class AppComponent {
@@ -33,6 +33,12 @@ export class AppComponent {
           ['2005',  1170,      460],
           ['2006',  660,       1120],
           ['2007',  1030,      540]];
+   private line_ChartData2 = [
+          ['Year', 'Sales', 'Expenses'],
+          ['2008',  1500,      800],
+          ['2009',  1670,      660],
+          ['2010',  900,       920],
+          ['2011',  1130,      840]];
    public bubble_ChartData = [
         ['ID', 'Life Expectancy', 'Fertility Rate', 'Region',     'Population'],
         ['CAN',    80.66,              1.67,      'North America',  33739900],
@@ -163,4 +169,8 @@ export class AppComponent {
       hAxis: {title: 'Year',  titleTextStyle: {color: '#333'}},
       vAxis: {minValue: 0}
     };
+
+    redrawChart(): void {
+      this.line_ChartData = this.line_ChartData2;
+    }
 }
