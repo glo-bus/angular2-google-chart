@@ -23,6 +23,7 @@ System.register(['@angular/core'], function(exports_1, context_1) {
                     this.element = element;
                     this.chartOptions = {};
                     this.redraw = false;
+                    this.exportOnDblClick = false;
                     this.elementId = element.nativeElement.id;
                 }
                 Object.defineProperty(GoogleChart.prototype, "chartData", {
@@ -59,6 +60,18 @@ System.register(['@angular/core'], function(exports_1, context_1) {
                     });
                     this.wrapper.draw();
                 };
+                GoogleChart.prototype.exportImage = function () {
+                    if (this.exportOnDblClick) {
+                        this.exportURICallback(this.getImageURI());
+                    }
+                };
+                GoogleChart.prototype.getImageURI = function () {
+                    var ret = null;
+                    if (this.wrapper != null) {
+                        ret = this.wrapper.getChart().getImageURI();
+                    }
+                    return ret;
+                };
                 __decorate([
                     core_1.Input('chartType'), 
                     __metadata('design:type', String)
@@ -72,10 +85,24 @@ System.register(['@angular/core'], function(exports_1, context_1) {
                     __metadata('design:type', Boolean)
                 ], GoogleChart.prototype, "redraw", void 0);
                 __decorate([
+                    core_1.Input('exportOnDblClick'), 
+                    __metadata('design:type', Boolean)
+                ], GoogleChart.prototype, "exportOnDblClick", void 0);
+                __decorate([
+                    core_1.Input('exportURICallback'), 
+                    __metadata('design:type', Object)
+                ], GoogleChart.prototype, "exportURICallback", void 0);
+                __decorate([
                     core_1.Input(), 
                     __metadata('design:type', Object), 
                     __metadata('design:paramtypes', [Object])
                 ], GoogleChart.prototype, "chartData", null);
+                __decorate([
+                    core_1.HostListener('dblclick'), 
+                    __metadata('design:type', Function), 
+                    __metadata('design:paramtypes', []), 
+                    __metadata('design:returntype', void 0)
+                ], GoogleChart.prototype, "exportImage", null);
                 GoogleChart = __decorate([
                     core_1.Directive({
                         selector: '[GoogleChart]'

@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, OnInit } from '@angular/core';
+import { Directive, ElementRef, HostListener, Input, OnInit } from '@angular/core';
 
 declare var google: any;
 declare var googleChartsRequested: boolean;
@@ -14,6 +14,8 @@ export class GoogleChart implements OnInit {
   @Input('chartType') public chartType: string;
   @Input('chartOptions') public chartOptions: Object = {};
   @Input('redraw') public redraw: boolean = false;
+  @Input('exportOnDblClick') public exportOnDblClick: boolean = false;
+  @Input('exportURICallback') public exportURICallback: any;
 
   @Input()
   set chartData(val: Object) {
@@ -52,5 +54,19 @@ export class GoogleChart implements OnInit {
       containerId:  this.elementId
     });
     this.wrapper.draw();
+  }
+
+  @HostListener('dblclick') exportImage() {
+    if (this.exportOnDblClick) {
+      this.exportURICallback(this.getImageURI());
+    }
+  }
+
+  getImageURI() {
+    let ret = null;
+    if (this.wrapper != null) {
+      ret = this.wrapper.getChart().getImageURI();
+    }
+    return ret;
   }
 }

@@ -12,7 +12,7 @@ import {Component} from '@angular/core';
     <h2>  Area Chart</h2>
     <div id="area_chart" [chartData]="area_ChartData" [chartOptions]= "area_ChartOptions" chartType="AreaChart" GoogleChart></div>
     <h2>  Line Chart</h2>
-    <div id="line_chart" [chartData]="line_ChartData" [chartOptions]= "line_ChartOptions" chartType="LineChart" [redraw]="true" GoogleChart></div>
+    <div id="line_chart" [exportURICallback]="exportChart" [exportOnDblClick]="true" [chartData]="line_ChartData" [chartOptions]= "line_ChartOptions" chartType="LineChart" [redraw]="true" GoogleChart></div>
     <br/><button (click)="redrawChart()">Use line_ChartData2 and Redraw Chart</button>
     <h2>  Bubble Chart</h2>
     <div id="bubble_chart" [chartData]="bubble_ChartData"  [chartOptions] = "bubble_ChartOptions" chartType="BubbleChart" GoogleChart></div>
@@ -172,5 +172,8 @@ export class AppComponent {
 
     redrawChart(): void {
       this.line_ChartData = this.line_ChartData2;
+    }
+    exportChart(imageURI): void {
+      console.log('export chart blob', imageURI);
     }
 }
