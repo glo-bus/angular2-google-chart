@@ -1,57 +1,56 @@
-import {Directive,ElementRef,Input,OnInit} from '@angular/core';
-declare var google:any;
-declare var googleLoaded:any;
+import { Directive, ElementRef, Input, OnInit } from '@angular/core';
+
+declare var google: any;
+declare var googleChartsRequested: boolean;
+declare var googleChartsLoaded: boolean;
+
 @Directive({
-  selector: '[GoogleChart]',
-  // properties: [
-  //     'chartType',
-  //     'chartOptions',
-  //     'chartData'
-  //   ]
+  selector: '[GoogleChart]'
 })
 export class GoogleChart implements OnInit {
-  public _element: any;
-  public _chartData: Object;
+  private elementId: any;
+  private wrapper: any;
+  private _chartData: Object;
   @Input('chartType') public chartType: string;
-  @Input('chartOptions') public chartOptions: Object;
+  @Input('chartOptions') public chartOptions: Object = {};
   @Input('redraw') public redraw: boolean = false;
 
   @Input()
   set chartData(val: Object) {
     this._chartData = val;
     if (this.redraw === true) {
-      this.drawAfterGoogleLoaded();
+      this.drawAfterChartPackagesLoaded();
     }
   }
   get chartData() { return this._chartData; }
 
   constructor(public element: ElementRef) {
-    this._element = this.element.nativeElement;
+    this.elementId = element.nativeElement.id;
   }
 
   ngOnInit() {
-    this.drawAfterGoogleLoaded();
-  }
-
-  drawAfterGoogleLoaded() {
-    if(!googleLoaded) {
-      googleLoaded = true;
+    if (!googleChartsRequested) {
+      googleChartsRequested = true;
       google.charts.load('current', {'packages':['corechart', 'gauge']});
     }
-    setTimeout(() =>this.drawGraph(this.chartOptions,this.chartType,this.chartData,this._element),1000);
+    google.charts.setOnLoadCallback(this.drawChart.bind(this));
   }
 
-  drawGraph (chartOptions,chartType,chartData,ele) {
-    google.charts.setOnLoadCallback(drawChart);
-    function drawChart() {
-      var wrapper;
-      wrapper = new google.visualization.ChartWrapper({
-        chartType: chartType,
-        dataTable:chartData ,
-        options:chartOptions || {},
-        containerId: ele.id
-      });
-      wrapper.draw();
+  drawAfterChartPackagesLoaded(): void {
+    if (googleChartsLoaded){
+      // The chart packages have been loaded, proceed
+      this.drawChart();
     }
+  }
+
+  drawChart() {
+    googleChartsLoaded = true;
+    this.wrapper = new google.visualization.ChartWrapper({
+      chartType:    this.chartType,
+      dataTable:    this.chartData ,
+      options:      this.chartOptions,
+      containerId:  this.elementId
+    });
+    this.wrapper.draw();
   }
 }

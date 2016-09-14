@@ -21,43 +21,43 @@ System.register(['@angular/core'], function(exports_1, context_1) {
             GoogleChart = (function () {
                 function GoogleChart(element) {
                     this.element = element;
+                    this.chartOptions = {};
                     this.redraw = false;
-                    this._element = this.element.nativeElement;
+                    this.elementId = element.nativeElement.id;
                 }
                 Object.defineProperty(GoogleChart.prototype, "chartData", {
                     get: function () { return this._chartData; },
                     set: function (val) {
                         this._chartData = val;
                         if (this.redraw === true) {
-                            this.drawAfterGoogleLoaded();
+                            this.drawAfterChartPackagesLoaded();
                         }
                     },
                     enumerable: true,
                     configurable: true
                 });
                 GoogleChart.prototype.ngOnInit = function () {
-                    this.drawAfterGoogleLoaded();
-                };
-                GoogleChart.prototype.drawAfterGoogleLoaded = function () {
-                    var _this = this;
-                    if (!googleLoaded) {
-                        googleLoaded = true;
+                    if (!googleChartsRequested) {
+                        googleChartsRequested = true;
                         google.charts.load('current', { 'packages': ['corechart', 'gauge'] });
                     }
-                    setTimeout(function () { return _this.drawGraph(_this.chartOptions, _this.chartType, _this.chartData, _this._element); }, 1000);
+                    google.charts.setOnLoadCallback(this.drawChart.bind(this));
                 };
-                GoogleChart.prototype.drawGraph = function (chartOptions, chartType, chartData, ele) {
-                    google.charts.setOnLoadCallback(drawChart);
-                    function drawChart() {
-                        var wrapper;
-                        wrapper = new google.visualization.ChartWrapper({
-                            chartType: chartType,
-                            dataTable: chartData,
-                            options: chartOptions || {},
-                            containerId: ele.id
-                        });
-                        wrapper.draw();
+                GoogleChart.prototype.drawAfterChartPackagesLoaded = function () {
+                    if (googleChartsLoaded) {
+                        // The chart packages have been loaded, proceed
+                        this.drawChart();
                     }
+                };
+                GoogleChart.prototype.drawChart = function () {
+                    googleChartsLoaded = true;
+                    this.wrapper = new google.visualization.ChartWrapper({
+                        chartType: this.chartType,
+                        dataTable: this.chartData,
+                        options: this.chartOptions,
+                        containerId: this.elementId
+                    });
+                    this.wrapper.draw();
                 };
                 __decorate([
                     core_1.Input('chartType'), 
@@ -78,7 +78,7 @@ System.register(['@angular/core'], function(exports_1, context_1) {
                 ], GoogleChart.prototype, "chartData", null);
                 GoogleChart = __decorate([
                     core_1.Directive({
-                        selector: '[GoogleChart]',
+                        selector: '[GoogleChart]'
                     }), 
                     __metadata('design:paramtypes', [core_1.ElementRef])
                 ], GoogleChart);

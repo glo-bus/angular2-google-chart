@@ -12,9 +12,9 @@ The sources for this package are in (https://github.com/vimalavinisha/angular2-g
 ###1. In index.html page include following script:
       <script src="https://www.gstatic.com/charts/loader.js"></script>
       <script>  
-      !important: You want to give this variable(var googleLoaded = false;). This is used to run multiple chart in your jade.
-        var googleLoaded = false;
-        </script>
+        !important: These global variables are required to ensure proper loading of the chart(s)
+        var googleChartsRequested, googleChartsLoaded = false;
+      </script>
 ###2. In app.module, import the included Angular2GoogleChartModule:
       import { NgModule }       from '@angular/core';
       import { BrowserModule  } from '@angular/platform-browser';
