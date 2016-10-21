@@ -63,7 +63,7 @@ export class GoogleChart implements OnInit {
   }
 
   getImageURI() {
-    let ret = null;
+    let ret:any = null;
     if (this.wrapper != null) {
       ret = this.wrapper.getChart().getImageURI();
     }
